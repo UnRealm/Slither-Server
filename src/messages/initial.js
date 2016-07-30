@@ -4,11 +4,7 @@ var config = require('../../config/config.js');
 
 var arr = new Uint8Array(26);
 
-var b = 0;
-
-b += message.writeInt8(b, arr, 0);
-
-b += message.writeInt8(b, arr, 0);
+var b = 2;
 
 b += message.writeInt8(b, arr, 'a'.charCodeAt(0));
 

@@ -130,12 +130,9 @@ function handleMessage (conn, data) {
                     conn.close();
                 }
 				
-				clients[conn.id].lastmsg = clients[conn.id].thismsg;
-				clients[conn.id].thismsg = Date.now();
-				var timebetween = clients[conn.id].thismsg - clients[conn.id].lastmsg;
-                broadcast(messages.position.build(conn.id, (conn.snake.body.x / 5), (conn.snake.body.y / 5)), timebetween);
-                broadcast(messages.direction.build(conn.id, conn.snake), timebetween);
-                broadcast(messages.movement.build(conn.id, conn.snake.direction.x, conn.snake.direction.y), timebetween);
+                broadcast(messages.position.build(conn.id, (conn.snake.body.x / 5), (conn.snake.body.y / 5)));
+                broadcast(messages.direction.build(conn.id, conn.snake));
+                broadcast(messages.movement.build(conn.id, conn.snake.direction.x, conn.snake.direction.y));
             }, 230);
         } // else if(firstByte === 255){
  // var message = message.readString(3, data, data.byteLength);
@@ -185,7 +182,12 @@ function spawnSnakes (id) {
 }
 
 function send (id, data) {
+    
     if (clients[id]) {
+        var currentTime = Date.now();
+        var deltaTime = currentTime - clients[id].lastTime;
+        clients[id].lastTime = currentTime;
+        message.writeInt16(0, data, deltaTime);
         clients[id].send(data, {binary: true});
     }
 }
